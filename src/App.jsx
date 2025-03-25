@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Editor from '@monaco-editor/react'
 import prettier from 'prettier/standalone'
 import parserBabel from 'prettier/parser-babel'
@@ -9,6 +9,27 @@ function App() {
   const [editorInstance, setEditorInstance] = useState(null)
   const [monacoInstance, setMonacoInstance] = useState(null)
   const [language, setLanguage] = useState('javascript')
+  const [theme, setTheme] = useState('dark')
+  const [isLoading, setIsLoading] = useState(false)
+  const [copySuccess, setCopySuccess] = useState(false)
+  
+  // Initialize theme from localStorage if available
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('code-beautifier-theme')
+    if (savedTheme) {
+      setTheme(savedTheme)
+    }
+  }, [])
+  
+  // Apply theme to document
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('code-beautifier-theme', theme)
+  }, [theme])
+  
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark')
+  }
 
   const handleEditorDidMount = (editor, monaco) => {
     setEditorInstance(editor)
@@ -68,6 +89,8 @@ function App() {
       setBeautifiedCode('Please enter some code first.')
       return
     }
+    
+    setIsLoading(true)
     
     try {
       // Auto-detect language if not explicitly set
@@ -135,60 +158,120 @@ function App() {
     } catch (error) {
       console.error('Error beautifying code:', error)
       setBeautifiedCode(`Error: Failed to beautify code. ${error.message || 'Unknown error'}`)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className="app-container">
-      <h1>Code Beautifier</h1>
-      <div className="language-selector">
-        <label htmlFor="language-select">Select Language: </label>
-        <select 
-          id="language-select" 
-          value={language} 
-          onChange={handleLanguageChange}
-        >
-          <option value="javascript">JavaScript</option>
-          <option value="html">HTML</option>
-          <option value="css">CSS</option>
-        </select>
-      </div>
+    <div className={`app-container ${theme}`}>
+      <header className="app-header">
+        <h1>Code Beautifier</h1>
+        <div className="controls">
+          <div className="language-selector">
+            <label htmlFor="language-select">Select Language: </label>
+            <select 
+              id="language-select" 
+              value={language} 
+              onChange={handleLanguageChange}
+            >
+              <option value="javascript">JavaScript</option>
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+            </select>
+          </div>
+          <button 
+            className="theme-toggle" 
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? '☀' : '☾'}
+          </button>
+        </div>
+      </header>
       <div className="editor-container">
         <div className="editor-section">
-          <h2>Input Code</h2>
-          <Editor
-            height="400px"
-            defaultLanguage={language}
-            language={language}
-            value={code}
-            onChange={handleEditorChange}
-            onMount={handleEditorDidMount}
-            theme="vs-dark"
-            options={{
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              wordWrap: 'on'
-            }}
-          />
-          <button onClick={beautifyCode}>Beautify Code</button>
+          <div className="editor-header">
+            <h2>Input Code</h2>
+          </div>
+          <div className="editor-wrapper">
+            <Editor
+              height="450px"
+              defaultLanguage={language}
+              language={language}
+              value={code}
+              onChange={handleEditorChange}
+              onMount={handleEditorDidMount}
+              theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
+              options={{
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on'
+              }}
+            />
+          </div>
+          <button 
+            onClick={beautifyCode} 
+            disabled={isLoading}
+            className={isLoading ? 'loading' : ''}
+          >
+            {isLoading ? 'Processing...' : 'Beautify Code'}
+          </button>
         </div>
         <div className="editor-section">
-          <h2>Beautified Code</h2>
-          <Editor
-            height="400px"
-            defaultLanguage={language}
-            language={language}
-            value={beautifiedCode}
-            options={{ 
-              readOnly: true,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              wordWrap: 'on'
-            }}
-            theme="vs-dark"
-          />
+          <div className="editor-header">
+            <h2>Beautified Code</h2>
+            {beautifiedCode && (
+              <button 
+                className="copy-button" 
+                onClick={() => {
+                  navigator.clipboard.writeText(beautifiedCode)
+                    .then(() => {
+                      setCopySuccess(true);
+                      setTimeout(() => setCopySuccess(false), 2000);
+                    })
+                    .catch(err => console.error('Failed to copy text: ', err));
+                }}
+                aria-label="Copy to clipboard"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            )}
+          </div>
+          <div className="editor-wrapper">
+            {isLoading && <div className="loader"></div>}
+            {copySuccess && <div className="copy-success visible">Copied!</div>}
+            <Editor
+              height="450px"
+              defaultLanguage={language}
+              language={language}
+              value={beautifiedCode}
+              options={{ 
+                readOnly: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on'
+              }}
+              theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
+            />
+          </div>
         </div>
       </div>
+      <footer className="app-footer">
+        <div className="footer-content">
+          <p>&copy; {new Date().getFullYear()} Code Beautifier</p>
+          <a href="https://github.com/anishfyi" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+            github.com/anishfyi
+          </a>
+        </div>
+      </footer>
     </div>
   )
 }
