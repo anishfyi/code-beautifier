@@ -8,7 +8,7 @@ function App() {
   const [beautifiedCode, setBeautifiedCode] = useState('')
   const [editorInstance, setEditorInstance] = useState(null)
   const [monacoInstance, setMonacoInstance] = useState(null)
-  const [language, setLanguage] = useState('javascript')
+  const [language, setLanguage] = useState('html')
   const [theme, setTheme] = useState('dark')
   const [isLoading, setIsLoading] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
@@ -175,8 +175,8 @@ function App() {
               value={language} 
               onChange={handleLanguageChange}
             >
-              <option value="javascript">JavaScript</option>
               <option value="html">HTML</option>
+              <option value="javascript">JavaScript</option>
               <option value="css">CSS</option>
             </select>
           </div>
