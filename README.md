@@ -6,7 +6,9 @@ A modern code beautification tool built with React that helps developers format 
 
 - Live code formatting using Prettier
 - Monaco Editor integration for syntax highlighting
-- Support for JavaScript/JSX code formatting
+- Support for JavaScript, HTML, and CSS code formatting
+- Language auto-detection for input code
+- Language selector for manual language selection
 - Dark theme for better readability
 - Real-time preview of formatted code
 

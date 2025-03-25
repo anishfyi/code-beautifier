@@ -16,6 +16,25 @@ body {
   padding: 2rem;
 }
 
+.language-selector {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.language-selector label {
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+.language-selector select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  background-color: #2d2d2d;
+  color: #fff;
+  border: 1px solid #61dafb;
+  cursor: pointer;
+}
+
 h1 {
   text-align: center;
   margin-bottom: 2rem;
