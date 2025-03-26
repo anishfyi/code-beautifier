@@ -4,13 +4,12 @@ A modern code beautification tool built with React that helps developers format 
 
 ## Features
 
-- Live code formatting using Prettier
+- Live HTML code formatting using Prettier
 - Monaco Editor integration for syntax highlighting
-- Support for JavaScript, HTML, and CSS code formatting
-- Language auto-detection for input code
-- Language selector for manual language selection
-- Dark theme for better readability
-- Real-time preview of formatted code
+- Support for HTML code formatting (JavaScript and CSS support coming soon)
+- Clean and intuitive user interface
+- Single-click beautification
+- Configurable formatting options
 
 ## Installation
 
@@ -33,9 +32,9 @@ A modern code beautification tool built with React that helps developers format 
 ## Usage
 
 1. Open the application in your browser
-2. Paste your unformatted code in the left editor
+2. Paste your unformatted HTML code in the editor
 3. Click the "Beautify Code" button
-4. The formatted code will appear in the right editor
+4. The formatted code will replace the input code
 
 ## Technologies Used
 

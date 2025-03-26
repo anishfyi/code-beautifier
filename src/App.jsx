@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Editor from '@monaco-editor/react'
 import prettier from 'prettier/standalone'
-import parserBabel from 'prettier/parser-babel'
+import parserHtml from 'prettier/parser-html'
 
 function App() {
   const [code, setCode] = useState('')
   const [editorInstance, setEditorInstance] = useState(null)
   const [monacoInstance, setMonacoInstance] = useState(null)
-  const [language, setLanguage] = useState('html')
   const [isLoading, setIsLoading] = useState(false)
-  const [copySuccess, setCopySuccess] = useState(false)
 
   const handleEditorDidMount = (editor, monaco) => {
     setEditorInstance(editor)
@@ -36,21 +34,7 @@ function App() {
     setCode(value)
   }
 
-  // Detect language based on code content
-  const detectLanguage = (code) => {
-    return 'html'
-  }
-  
-  // Handle language change
-  const handleLanguageChange = (e) => {
-    const newLanguage = e.target.value
-    setLanguage(newLanguage)
-    
-    // Update editor language
-    if (editorInstance) {
-      monacoInstance.editor.setModelLanguage(editorInstance.getModel(), newLanguage)
-    }
-  }
+
 
   const beautifyCode = async () => {
     if (!code || !monacoInstance) {
@@ -61,66 +45,17 @@ function App() {
     setIsLoading(true)
     
     try {
-      // Auto-detect language if not explicitly set
-      const detectedLanguage = language || detectLanguage(code)
-      
-      // Configure formatting options based on language
       const formatOptions = {
-        semi: true,
-        singleQuote: true,
-        trailingComma: 'es5',
         printWidth: 80,
         tabWidth: 2,
-        useTabs: false,
-        bracketSpacing: true,
-        arrowParens: 'always',
+        useTabs: false
       }
       
-      let formattedCode = ''
-      
-      // Format based on language type
-      if (detectedLanguage === 'html') {
-        try {
-          // For HTML, we'll use a simple indentation approach if Prettier fails
-          formattedCode = await prettier.format(code, {
-            parser: 'html',
-            plugins: [parserBabel], // Using babel parser as fallback
-            ...formatOptions
-          })
-        } catch (htmlError) {
-          console.warn('HTML formatting error:', htmlError)
-          // Fallback to basic formatting
-          formattedCode = code.replace(/\>\s*\</g, '>\n<')
-                           .replace(/^\s+|\s+$/g, '')
-                           .split('\n')
-                           .map(line => line.trim())
-                           .join('\n')
-        }
-      } else if (detectedLanguage === 'css') {
-        try {
-          // For CSS, we'll use a simple indentation approach if Prettier fails
-          formattedCode = await prettier.format(code, {
-            parser: 'css',
-            plugins: [parserBabel], // Using babel parser as fallback
-            ...formatOptions
-          })
-        } catch (cssError) {
-          console.warn('CSS formatting error:', cssError)
-          // Fallback to basic formatting
-          formattedCode = code.replace(/\{\s*/g, ' {\n  ')
-                           .replace(/;\s*/g, ';\n  ')
-                           .replace(/\s*}/g, '\n}')
-                           .replace(/\s*:\s*/g, ': ')
-                           .replace(/\s*,\s*/g, ', ')
-        }
-      } else {
-        // JavaScript formatting with babel parser
-        formattedCode = await prettier.format(code, {
-          parser: 'babel',
-          plugins: [parserBabel],
-          ...formatOptions
-        })
-      }
+      const formattedCode = await prettier.format(code, {
+        parser: 'html',
+        plugins: [parserHtml],
+        ...formatOptions
+      })
       
       setCode(formattedCode)
     } catch (error) {
@@ -138,15 +73,7 @@ function App() {
       <header className="app-header">
         <h1>Code Beautifier</h1>
         <div className="controls">
-          <div className="language-selector">
-            <select 
-              id="language-select" 
-              value={language} 
-              onChange={handleLanguageChange}
-            >
-              <option value="html">HTML</option>
-            </select>
-          </div>
+
 
         </div>
       </header>
@@ -154,12 +81,13 @@ function App() {
         <div className="editor-section">
           <div className="editor-header">
             <h2>Code Editor</h2>
+            <span className="editor-info">(currently supports HTML, with more languages coming soon!)</span>
           </div>
           <div className="editor-wrapper">
             <Editor
               height="600px"
-              defaultLanguage={language}
-              language={language}
+              defaultLanguage="html"
+              language="html"
               value={code}
               onChange={handleEditorChange}
               onMount={handleEditorDidMount}
