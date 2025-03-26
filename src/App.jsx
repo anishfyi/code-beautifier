@@ -38,19 +38,7 @@ function App() {
 
   // Detect language based on code content
   const detectLanguage = (code) => {
-    if (!code) return 'javascript'
-    
-    // Simple language detection based on content patterns
-    if (code.includes('<html') || code.includes('<!DOCTYPE') || 
-        (code.includes('<') && code.includes('</') && code.includes('>'))) {
-      return 'html'
-    } else if (code.includes('{') && code.includes('}') && 
-              (code.includes('.') || code.includes('#')) && 
-              (code.includes(':') && !code.includes('function'))) {
-      return 'css'
-    } else {
-      return 'javascript'
-    }
+    return 'html'
   }
   
   // Handle language change
@@ -151,15 +139,12 @@ function App() {
         <h1>Code Beautifier</h1>
         <div className="controls">
           <div className="language-selector">
-            <label htmlFor="language-select">Select Language: </label>
             <select 
               id="language-select" 
               value={language} 
               onChange={handleLanguageChange}
             >
               <option value="html">HTML</option>
-              <option value="javascript">JavaScript</option>
-              <option value="css">CSS</option>
             </select>
           </div>
 
