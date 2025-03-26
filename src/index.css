@@ -379,8 +379,7 @@ button:focus {
 .app-footer {
   margin-top: auto;
   padding: 1.5rem 0;
-  background: var(--footer-bg);
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid transparent;
   position: relative;
 }
 
