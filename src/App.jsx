@@ -5,31 +5,11 @@ import parserBabel from 'prettier/parser-babel'
 
 function App() {
   const [code, setCode] = useState('')
-  const [beautifiedCode, setBeautifiedCode] = useState('')
   const [editorInstance, setEditorInstance] = useState(null)
   const [monacoInstance, setMonacoInstance] = useState(null)
   const [language, setLanguage] = useState('html')
-  const [theme, setTheme] = useState('dark')
   const [isLoading, setIsLoading] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
-  
-  // Initialize theme from localStorage if available
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('code-beautifier-theme')
-    if (savedTheme) {
-      setTheme(savedTheme)
-    }
-  }, [])
-  
-  // Apply theme to document
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('code-beautifier-theme', theme)
-  }, [theme])
-  
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark')
-  }
 
   const handleEditorDidMount = (editor, monaco) => {
     setEditorInstance(editor)
@@ -154,17 +134,19 @@ function App() {
         })
       }
       
-      setBeautifiedCode(formattedCode)
+      setCode(formattedCode)
     } catch (error) {
       console.error('Error beautifying code:', error)
-      setBeautifiedCode(`Error: Failed to beautify code. ${error.message || 'Unknown error'}`)
+      console.error('Error beautifying code:', error)
+      // Show error in editor
+      setCode(`Error: Failed to beautify code. ${error.message || 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className={`app-container ${theme}`}>
+    <div className="app-container">
       <header className="app-header">
         <h1>Code Beautifier</h1>
         <div className="controls">
@@ -180,29 +162,23 @@ function App() {
               <option value="css">CSS</option>
             </select>
           </div>
-          <button 
-            className="theme-toggle" 
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            {theme === 'dark' ? '☀' : '☾'}
-          </button>
+
         </div>
       </header>
       <div className="editor-container">
         <div className="editor-section">
           <div className="editor-header">
-            <h2>Input Code</h2>
+            <h2>Code Editor</h2>
           </div>
           <div className="editor-wrapper">
             <Editor
-              height="450px"
+              height="600px"
               defaultLanguage={language}
               language={language}
               value={code}
               onChange={handleEditorChange}
               onMount={handleEditorDidMount}
-              theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
+              theme="vs-light"
               options={{
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
@@ -210,54 +186,15 @@ function App() {
               }}
             />
           </div>
+          
+            <div className="beautify-button-container">
           <button 
-            onClick={beautifyCode} 
-            disabled={isLoading}
-            className={isLoading ? 'loading' : ''}
-          >
-            {isLoading ? 'Processing...' : 'Beautify Code'}
-          </button>
-        </div>
-        <div className="editor-section">
-          <div className="editor-header">
-            <h2>Beautified Code</h2>
-            {beautifiedCode && (
-              <button 
-                className="copy-button" 
-                onClick={() => {
-                  navigator.clipboard.writeText(beautifiedCode)
-                    .then(() => {
-                      setCopySuccess(true);
-                      setTimeout(() => setCopySuccess(false), 2000);
-                    })
-                    .catch(err => console.error('Failed to copy text: ', err));
-                }}
-                aria-label="Copy to clipboard"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                Copy
-              </button>
-            )}
-          </div>
-          <div className="editor-wrapper">
-            {isLoading && <div className="loader"></div>}
-            {copySuccess && <div className="copy-success visible">Copied!</div>}
-            <Editor
-              height="450px"
-              defaultLanguage={language}
-              language={language}
-              value={beautifiedCode}
-              options={{ 
-                readOnly: true,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                wordWrap: 'on'
-              }}
-              theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
-            />
+              onClick={beautifyCode} 
+              disabled={isLoading}
+              className={`beautify-button ${isLoading ? 'loading' : ''}`}
+            >
+              {isLoading ? 'Processing...' : 'Beautify Code'}
+            </button>
           </div>
         </div>
       </div>

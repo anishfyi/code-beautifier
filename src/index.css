@@ -1,56 +1,15 @@
 :root {
-  /* Dark theme variables */
-  --bg-color-dark: #202124;
-  --text-color-dark: #e8eaed;
-  --primary-color-dark: #8ab4f8;
-  --secondary-color-dark: #669df6;
-  --editor-bg-dark: #303134;
-  --button-bg-dark: #8ab4f8;
-  --button-text-dark: #202124;
-  --button-hover-dark: #669df6;
-  --border-color-dark: #5f6368;
-  --footer-bg-dark: #171717;
-  --shadow-dark: 0 2px 10px rgba(0, 0, 0, 0.3);
-  
-  /* Light theme variables */
-  --bg-color-light: #ffffff;
-  --text-color-light: #202124;
-  --primary-color-light: #1a73e8;
-  --secondary-color-light: #174ea6;
-  --editor-bg-light: #f8f9fa;
-  --button-bg-light: #1a73e8;
-  --button-text-light: #ffffff;
-  --button-hover-light: #174ea6;
-  --border-color-light: #dadce0;
-  --footer-bg-light: #f8f9fa;
-  --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Default to dark theme */
-[data-theme='dark'] {
-  --bg-color: var(--bg-color-dark);
-  --text-color: var(--text-color-dark);
-  --primary-color: var(--primary-color-dark);
-  --secondary-color: var(--secondary-color-dark);
-  --editor-bg: var(--editor-bg-dark);
-  --button-bg: var(--button-bg-dark);
-  --button-text: var(--button-text-dark);
-  --button-hover: var(--button-hover-dark);
-  --border-color: var(--border-color-dark);
-  --footer-bg: var(--footer-bg-dark);
-}
-
-[data-theme='light'] {
-  --bg-color: var(--bg-color-light);
-  --text-color: var(--text-color-light);
-  --primary-color: var(--primary-color-light);
-  --secondary-color: var(--secondary-color-light);
-  --editor-bg: var(--editor-bg-light);
-  --button-bg: var(--button-bg-light);
-  --button-text: var(--button-text-light);
-  --button-hover: var(--button-hover-light);
-  --border-color: var(--border-color-light);
-  --footer-bg: var(--footer-bg-light);
+  --bg-color: #ffffff;
+  --text-color: #202124;
+  --primary-color: #000000;
+  --secondary-color: #333333;
+  --editor-bg: #f8f9fa;
+  --button-bg: #000000;
+  --button-text: #ffffff;
+  --button-hover: #333333;
+  --border-color: #dadce0;
+  --footer-bg: #f8f9fa;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 body {
@@ -74,7 +33,7 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--bg-color);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
 }
 
 .app-header {
@@ -84,7 +43,7 @@ body {
   margin-bottom: 3rem;
   padding-bottom: 2rem;
   border-bottom: 2px solid var(--border-color);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
   position: relative;
 }
 
@@ -102,10 +61,7 @@ body {
 h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary-color);
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
 }
@@ -143,32 +99,24 @@ h1 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.theme-toggle {
-  width: 3rem;
-  height: 3rem;
-  border: none;
-  border-radius: 50%;
-  background: var(--bg-color);
-  color: var(--text-color);
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
 
-.theme-toggle:hover {
-  transform: rotate(15deg) scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  background: var(--primary-color);
-  color: var(--button-text);
-}
 
 .editor-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
   margin-bottom: 2rem;
   position: relative;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+@media (min-width: 992px) {
+  .editor-container {
+    flex-direction: row;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
 }
 
 .editor-section {
@@ -176,7 +124,7 @@ h1 {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
 }
 
 .editor-section:hover {
@@ -185,9 +133,12 @@ h1 {
 }
 
 .editor-header {
-  padding: 1rem 1.5rem;
-  background: var(--bg-color);
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
 }
 
 .editor-header h2 {
@@ -199,7 +150,31 @@ h1 {
 
 .editor-wrapper {
   padding: 1rem;
-  height: 450px;
+  height: 400px;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.editor-section {
+  background: var(--editor-bg);
+  border-radius: 12px;
+  overflow: visible;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  flex: 1;
+  position: relative;
+}
+
+.beautify-button-container {
+  position: sticky;
+  bottom: 1rem;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background: transparent;
+  z-index: 10;
 }
 
 .beautify-button {
@@ -214,8 +189,8 @@ h1 {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .beautify-button:hover {
@@ -264,27 +239,31 @@ h1 {
   flex-direction: column;
   gap: 1.75rem;
   flex: 1;
-  transition: all 0.3s ease;
+  max-width: 90vw;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
 @media (min-width: 992px) {
   .editor-container {
     flex-direction: row;
-    gap: 2.25rem;
+    gap: 2rem;
+    padding: 1.5rem;
   }
 }
 
 .editor-section {
   background-color: var(--editor-bg);
-  padding: 1.25rem;
+  padding: 1rem;
   border-radius: 8px;
   box-shadow: var(--shadow-light);
   flex: 1;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
   border: 1px solid var(--border-color);
-  min-height: 450px;
+  min-height: 500px;
+  max-height: calc(100vh - 200px);
+  overflow: hidden;
 }
 
 [data-theme='dark'] .editor-section {
@@ -297,6 +276,9 @@ h1 {
   border-radius: 4px;
   overflow: hidden;
   border: 1px solid var(--border-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .editor-header {
@@ -307,47 +289,49 @@ h1 {
 }
 
 .copy-button {
-  background-color: var(--editor-bg);
+  background: none;
   border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
   border-radius: 4px;
-  padding: 0.4rem 0.75rem;
-  font-size: 0.85rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   color: var(--text-color);
-  cursor: pointer;
+  font-size: 0.875rem;
   transition: all 0.2s ease;
 }
 
 .copy-button:hover {
-  background-color: var(--button-bg);
-  color: var(--button-text);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  background: rgba(26, 115, 232, 0.05);
 }
 
 .copy-button svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 .copy-success {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background-color: var(--primary-color);
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
   color: white;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
   opacity: 0;
-  transform: translateY(-10px);
   transition: all 0.3s ease;
-  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .copy-success.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(-1rem);
 }
 
 h2 {
@@ -360,26 +344,20 @@ h2 {
 }
 
 button {
-  margin-top: 1.25rem;
-  padding: 0.625rem 1.5rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  background-color: var(--button-bg);
-  color: var(--button-text);
+  background: var(--button-bg);
   border: none;
-  border-radius: 4px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  font-family: inherit;
-  letter-spacing: 0.01em;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  text-transform: none;
-  height: 36px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.75rem;
+  color: var(--button-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
@@ -399,46 +377,47 @@ button:focus {
 }
 
 .app-footer {
-  margin-top: 2rem;
-  padding: 1rem 0;
+  margin-top: auto;
+  padding: 1.5rem 0;
+  background: var(--footer-bg);
   border-top: 1px solid var(--border-color);
-  border-radius: 0 0 8px 8px;
+  position: relative;
+}
+
+.app-footer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  opacity: 0.2;
 }
 
 .footer-content {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  text-align: center;
-  padding: 0 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .footer-content {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-}
-
-.footer-content p {
-  margin: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .footer-content a {
-  color: var(--primary-color);
+  color: var(--text-color);
   text-decoration: none;
-  transition: color 0.2s;
-  font-weight: 500;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
 }
 
 .footer-content a:hover {
-  color: var(--secondary-color);
-  text-decoration: underline;
+  color: var(--primary-color);
+  background: rgba(26, 115, 232, 0.05);
 }
 
 button:disabled {
@@ -465,16 +444,18 @@ button.loading::before {
 }
 
 .loader {
+  border: 3px solid rgba(26, 115, 232, 0.1);
+  border-radius: 50%;
+  border-top: 3px solid var(--primary-color);
+  width: 24px;
+  height: 24px;
+  animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 10;
+  box-shadow: 0 0 10px rgba(26, 115, 232, 0.2);
 }
 
 .loader::after {
